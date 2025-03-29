@@ -1,1 +1,1073 @@
-sfcsf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #fff;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        header {
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: #000;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+            font-weight: 300;
+            transition: color 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            color: #888;
+            background: rgba(0,0,0,0.05);
+        }
+        
+        nav a.active {
+            font-weight: bold;
+            color: #ff0066;
+        }
+        
+        main {
+            padding: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+        
+        section {
+            margin-bottom: 40px;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+        }
+        
+        /* Dark Mode Styles */
+        .dark-mode {
+            background: #000;
+            color: #fff;
+        }
+        
+        .dark-mode nav a {
+            color: #fff;
+        }
+        
+        .dark-mode nav a:hover {
+            color: #bbb;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Home Section */
+        #home {
+            text-align: center;
+        }
+        
+        .message {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slideshow {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .slideshow img {
+            width: 100%;
+            display: none;
+            transition: opacity 1s ease;
+        }
+        
+        .slideshow img.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .slideshow-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        
+        .slideshow-nav button {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .slideshow-nav button:hover {
+            background: rgba(0,0,0,0.8);
+            transform: scale(1.1);
+        }
+        
+        /* Letter Section */
+        #letter {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .password-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        
+        .dark-mode .password-container {
+            background-color: #222;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .password-container h2 {
+            margin-bottom: 20px;
+        }
+        
+        .password-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .dark-mode .password-container input {
+            background-color: #333;
+            color: #fff;
+            border-color: #555;
+        }
+        
+        .password-container button {
+            background: #ff0066;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .password-container button:hover {
+            background: #e6005c;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .letter-content {
+            display: none;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.8;
+            padding: 20px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dark-mode .letter-content {
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .letter-signature {
+            text-align: right;
+            margin-top: 40px;
+            font-style: italic;
+            font-weight: bold;
+        }
+        
+        /* Gallery Section */
+        #gallery-section {
+            display: none;
+        }
+        
+        .gallery-container {
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .gallery {
+            column-count: 8;
+            column-gap: 15px;
+        }
+        
+        @media (max-width: 1200px) {
+            .gallery {
+                column-count: 3;
+            }
+        }
+        
+        @media (max-width: 800px) {
+            .gallery {
+                column-count: 2;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .gallery {
+                column-count: 1;
+            }
+        }
+        
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 15px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .dark-mode .gallery-item {
+            box-shadow: 0 3px 10px rgba(255,255,255,0.1);
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .dark-mode .gallery-item:hover {
+            box-shadow: 0 8px 20px rgba(255,255,255,0.2);
+        }
+        
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img, .gallery-item:hover video {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+        
+        /* Quiz Section */
+        #quiz {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+            padding: 20px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dark-mode #quiz {
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .quiz-question {
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .quiz-question.active {
+            display: block;
+        }
+        
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .quiz-option {
+            padding: 12px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .quiz-option {
+            background: #333;
+        }
+        
+        .quiz-option:hover {
+            background: #ddd;
+            transform: translateX(5px);
+        }
+        
+        .dark-mode .quiz-option:hover {
+            background: #444;
+        }
+        
+        .quiz-option.correct {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .quiz-option.wrong {
+            background: #f44336;
+            color: white;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .quiz-button {
+            padding: 10px 20px;
+            background: #ff0066;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-button:hover {
+            background: #e6005c;
+            transform: translateY(-2px);
+        }
+        
+        .quiz-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .quiz-results {
+            text-align: center;
+            display: none;
+        }
+        
+        /* Dark Mode Toggle */
+        #darkModeToggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        #darkModeToggle:hover {
+            transform: rotate(30deg);
+        }
+        
+        /* Heart Icon Animation */
+        .heart-icon {
+            color: #ff0066;
+            margin: 0 5px;
+            animation: pulse 1.5s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        
+        .loading span {
+            width: 12px;
+            height: 12px;
+            margin: 0 5px;
+            background-color: #ff0066;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.5s infinite ease-in-out both;
+        }
+        
+        .loading span:nth-child(1) {
+            animation-delay: -0.3s;
+        }
+        
+        .loading span:nth-child(2) {
+            animation-delay: -0.15s;
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .dark-mode footer {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LOVE <span class="heart-icon">❤</span></h1>
+        <nav>
+            <a href="#home" class="active">Home</a>
+            <a href="#letter">Letter</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#quiz">Quiz</a>
+        </nav>
+        <button id="darkModeToggle">🌙</button>
+    </header>
+    
+    <main>
+        <!-- Home Section -->
+        <section id="home">
+            <div class="message">
+                <h2>This website is for you</h2>
+                <p>Happy Anniversary, my love! Here's to more beautiful memories together.</p>
+            </div>
+            
+            <div class="slideshow">
+                <img src="3.png" class="active">
+                <img src="2.png">
+                <img src="1.png">
+                
+                <div class="slideshow-nav">
+                    <button class="prev">&#10094;</button>
+                    <button class="next">&#10095;</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Letter Section -->
+        <section id="letter">
+            <div id="passwordProtection" class="password-container">
+                <h2>Private Letter <span class="heart-icon">❤</span></h2>
+                <p>This letter is just for your eyes. Please enter our special password:</p>
+                <input type="password" id="letterPassword" placeholder="Enter password...">
+                <p id="passwordError" class="error-message">Sorry, that's not the right password</p>
+                <button id="submitPassword">Unlock My Heart</button>
+            </div>
+
+            <div id="letterContent" class="letter-content">
+                <h2>My Dearest Love</h2>
+                <p>As we celebrate another year together, I wanted to take a moment to reflect on the journey we've shared. Every day with you feels like a blessing, a new adventure waiting to unfold.</p>
+                
+                <p>I remember the day we first met, how my heart skipped a beat when our eyes connected. Little did I know that moment would change my life forever. Since then, you've been my rock, my confidant, my best friend, and my greatest love.</p>
+                
+                <p>Through all the ups and downs, your love has remained constant. Your smile brightens even my darkest days, and your laugh is the sweetest melody to my ears. You understand me like no one else does, accepting me with all my flaws and imperfections.</p>
+                
+                <p>I cherish our quiet moments together - the late-night conversations, the comfortable silences, the shared glances that speak volumes without a single word. Every memory we've created is etched in my heart, a treasure I hold dear.</p>
+                
+                <p>As we look toward the future, I'm filled with excitement for all the adventures yet to come. More laughter, more dreams, more memories to be made. With you by my side, I know anything is possible.</p>
+                
+                <p>Thank you for being you, for loving me, for choosing me every day. My love for you grows deeper with each passing moment.</p>
+                
+                <p>Here's to us, to our love story that continues to be written. Happy Anniversary!</p>
+                
+                <div class="letter-signature">
+                    <p>Forever yours,<br>
+                    With all my heart and soul</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gallery Section -->
+        <section id="gallery-section">
+            <div class="gallery-container">
+                <h2>Our Memories <span class="heart-icon">❤</span></h2>
+                <p>Moments that make our hearts flutter.</p>
+                
+                <div id="galleryLoading" class="loading">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                
+                <div id="gallery" class="gallery">
+                    <!-- Images and videos will be loaded here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quiz Section -->
+        <section id="quiz">
+            <h2>How Well Do You Know Us? <span class="heart-icon">❤</span></h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-question active" data-question="1">
+                    <h3>Where did we first meet?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" >At a mutual friend's party</div>
+                        <div class="quiz-option">In college</div>
+                        <div class="quiz-option">At work</div>
+                        <div class="quiz-option" data-correct="true">Online dating app</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="2">
+                    <h3>What was our first date?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option">Movie night</div>
+                        <div class="quiz-option" data-correct="true">Coffee at that little café</div>
+                        <div class="quiz-option">Dinner at a fancy restaurant</div>
+                        <div class="quiz-option">Walk in the park</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="3">
+                    <h3>What's my favorite thing about you?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option">Your looks</div>
+                        <div class="quiz-option">Your intelligence</div>
+                        <div class="quiz-option" data-correct="true">Your kind heart</div>
+                        <div class="quiz-option">Your sense of humor</div>
+                    </div>
+                </div>
+                
+                
+                
+                <div class="quiz-question" data-question="5">
+                    <h3>What's my favorite memory of us?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option">Our first kiss</div>
+                        <div class="quiz-option">Our anniversary trip</div>
+                        <div class="quiz-option" data-correct="true">That rainy day we spent cuddled up together</div>
+                        <div class="quiz-option">When you surprised me with flowers</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="quiz-button prev-question" disabled>Previous</button>
+                    <button class="quiz-button next-question">Next</button>
+                </div>
+                
+                <div class="quiz-results">
+                    <h3>Quiz Results</h3>
+                    <p>You got <span id="score">0</span> out of <span id="total">5</span> correct!</p>
+                    <p id="quiz-message"></p>
+                    <button class="quiz-button restart-quiz">Take Again</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Created with <span class="heart-icon">❤</span> for you</p>
+    </footer>
+    
+    <script>
+        // Gallery data
+        const galleryItems = [
+            { type: 'image', src: 'images/18.jpg' },
+            { type: 'image', src: 'images/25.jpg' },
+            { type: 'image', src: 'images/5.jpg' },
+            { type: 'image', src: 'images/30.jpg' },
+            { type: 'image', src: 'images/10.jpg' },
+            { type: 'video', src: 'images/105.mp4' },
+            { type: 'image', src: 'images/7.jpg' },
+            { type: 'image', src: 'images/22.jpg' },
+            { type: 'image', src: 'images/14.jpg' },
+            { type: 'image', src: 'images/41.jpg' },
+            { type: 'image', src: 'images/31.jpg' },
+            { type: 'video', src: 'images/101.mp4' },
+            { type: 'image', src: 'images/27.webp' },
+            { type: 'image', src: 'images/19.jpg' },
+            { type: 'image', src: 'images/35.jpg' },
+            { type: 'image', src: 'images/3.jpg' },
+            { type: 'image', src: 'images/23.jpg' },
+            { type: 'video', src: 'images/109.mp4' },
+            { type: 'image', src: 'images/9.jpg' },
+            { type: 'image', src: 'images/36.jpg' },
+            { type: 'image', src: 'images/13.jpg' },
+            { type: 'image', src: 'images/50.webp' },
+            { type: 'image', src: 'images/100.jpg' },
+            { type: 'video', src: 'images/103.mp4' },
+            { type: 'image', src: 'images/6.jpg' },
+            { type: 'image', src: 'images/28.webp' },
+            { type: 'image', src: 'images/52.jpg' },
+            { type: 'image', src: 'images/15.jpg' },
+            { type: 'image', src: 'images/37.jpg' },
+            { type: 'video', src: 'images/13.mp4' },
+            { type: 'image', src: 'images/20.jpg' },
+            { type: 'image', src: 'images/16.jpg' },
+            { type: 'image', src: 'images/8.jpg' },
+            { type: 'image', src: 'images/97.jpg' },
+            { type: 'image', src: 'images/44.jpg' },
+            { type: 'video', src: 'images/104.mp4' },
+            { type: 'image', src: 'images/40.jpeg' },
+            { type: 'image', src: 'images/33.jpg' },
+            { type: 'image', src: 'images/12.jpg' },
+            { type: 'image', src: 'images/95.jpg' },
+            { type: 'image', src: 'images/46.jpg' },
+            { type: 'video', src: 'images/85.mp4' },
+            { type: 'image', src: 'images/99.jpg' },
+            { type: 'image', src: 'images/1.jpg' },
+            { type: 'image', src: 'images/42.jpg' },
+            { type: 'image', src: 'images/26.jpg' },
+            { type: 'image', src: 'images/11.jpg' },
+            { type: 'video', src: 'images/110.mp4' },
+            { type: 'image', src: 'images/32.jpg' },
+            { type: 'image', src: 'images/48.jpg' },
+            { type: 'image', src: 'images/4.jpg' },
+            { type: 'image', src: 'images/39.jpg' },
+            { type: 'image', src: 'images/98.jpeg' },
+            { type: 'video', src: 'images/108.mp4' },
+            { type: 'image', src: 'images/21.jpg' },
+            { type: 'image', src: 'images/45.jpg' },
+            { type: 'image', src: 'images/17.jpg' },
+            { type: 'image', src: 'images/38.jpg' },
+            { type: 'image', src: 'images/54.jpg' },
+            { type: 'video', src: 'images/112.mp4' },
+            { type: 'image', src: 'images/49.jpg' },
+            { type: 'image', src: 'images/43.jpg' },
+            { type: 'image', src: 'images/96.jpeg' },
+            { type: 'image', src: 'images/51.jpg' },
+            { type: 'image', src: 'images/91.jpg' },
+            { type: 'video', src: 'images/107.mp4' },
+            { type: 'image', src: 'images/92.jpg' },
+            { type: 'image', src: 'images/93.jpeg' },
+            { type: 'image', src: 'images/117.jpg' },
+            { type: 'image', src: 'images/118.jpg' },
+            { type: 'image', src: 'images/119.jpg' },
+            { type: 'video', src: 'images/90.mp4' },
+            { type: 'image', src: 'images/116.jpg' },
+            { type: 'image', src: 'images/113.jpg' },
+            { type: 'image', src: 'images/115.jpg' },
+            { type: 'image', src: 'images/93.jpg' },
+            { type: 'image', src: 'images/47.jpg' },
+            { type: 'video', src: 'images/106.mp4' },
+            { type: 'image', src: 'images/2.jpg' },
+            { type: 'image', src: 'images/53.jpg' },
+            { type: 'image', src: 'images/24.jpg' },
+            { type: 'image', src: 'images/29.jpg' },
+            { type: 'image', src: 'images/34.jpg' },
+            { type: 'video', src: 'images/102.mp4' }
+        ];
+
+        // DOM Elements
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = {
+            home: document.getElementById('home'),
+            letter: document.getElementById('letter'),
+            gallery: document.getElementById('gallery-section'),
+            quiz: document.getElementById('quiz')
+        };
+        
+        // Slideshow elements
+        const slideshowImages = document.querySelectorAll('.slideshow img');
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        
+        // Letter elements
+        const passwordProtection = document.getElementById('passwordProtection');
+        const letterContent = document.getElementById('letterContent');
+        const letterPassword = document.getElementById('letterPassword');
+        const submitPassword = document.getElementById('submitPassword');
+        const passwordError = document.getElementById('passwordError');
+        
+        // Gallery elements
+        const gallery = document.getElementById('gallery');
+        const galleryLoading = document.getElementById('galleryLoading');
+        
+        // Quiz elements
+        const quizQuestions = document.querySelectorAll('.quiz-question');
+        const quizOptions = document.querySelectorAll('.quiz-option');
+        const prevQuestionBtn = document.querySelector('.prev-question');
+        const nextQuestionBtn = document.querySelector('.next-question');
+        const restartQuizBtn = document.querySelector('.restart-quiz');
+        const quizResults = document.querySelector('.quiz-results');
+        const scoreElement = document.getElementById('score');
+        const totalElement = document.getElementById('total');
+        const quizMessage = document.getElementById('quiz-message');
+        
+        // Variables
+        let currentSlide = 0;
+        let currentQuestion = 0;
+        let quizScore = 0;
+        const correctPassword = "iloveyou"; // Change this to your desired password
+        
+        // Initialize the page
+        function init() {
+            // Set up dark mode toggle
+            setupDarkMode();
+            
+            // Set up navigation
+            setupNavigation();
+            
+            // Set up slideshow
+            setupSlideshow();
+            
+            // Set up letter password protection
+            setupLetter();
+            
+            // Load gallery
+            loadGallery();
+            
+            // Set up quiz
+            setupQuiz();
+        }
+        
+        // Dark mode functionality
+        function setupDarkMode() {
+            // Check for saved preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.textContent = '☀️';
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                darkModeToggle.textContent = isDarkMode ? '☀️' : '🌙';
+                localStorage.setItem('darkMode', isDarkMode);
+            });
+        }
+        
+        // Navigation functionality
+        function setupNavigation() {
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('href').substring(1);
+                    
+                    // Hide all sections
+                    Object.values(sections).forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show target section
+                    sections[target].style.display = 'block';
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    link.classList.add('active');
+                    
+                    // Special handling for gallery
+                    if (target === 'gallery') {
+                        // Trigger gallery loading if not already loaded
+                        if (gallery.children.length === 0) {
+                            loadGallery();
+                        }
+                    }
+                });
+            });
+            
+            // Show home section by default
+            sections.home.style.display = 'block';
+        }
+        
+        // Slideshow functionality
+        function setupSlideshow() {
+            function showSlide(index) {
+                slideshowImages.forEach((img, i) => {
+                    img.classList.toggle('active', i === index);
+                });
+            }
+            
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slideshowImages.length;
+                showSlide(currentSlide);
+            }
+            
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slideshowImages.length) % slideshowImages.length;
+                showSlide(currentSlide);
+            }
+            
+            // Button events
+            nextButton.addEventListener('click', nextSlide);
+            prevButton.addEventListener('click', prevSlide);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextSlide();
+                if (e.key === 'ArrowLeft') prevSlide();
+            });
+            
+            // Auto-advance slides
+            let slideInterval = setInterval(nextSlide, 5000);
+            
+            // Pause on hover
+            document.querySelector('.slideshow').addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            document.querySelector('.slideshow').addEventListener('mouseleave', () => {
+                slideInterval = setInterval(nextSlide, 5000);
+            });
+            
+            // Show first slide
+            showSlide(currentSlide);
+        }
+        
+        // Letter functionality
+        function setupLetter() {
+            function checkPassword() {
+                if (letterPassword.value === correctPassword) {
+                    passwordProtection.style.display = 'none';
+                    letterContent.style.display = 'block';
+                    passwordError.style.display = 'none';
+                } else {
+                    passwordError.style.display = 'block';
+                    letterPassword.value = '';
+                    letterPassword.focus();
+                }
+            }
+            
+            submitPassword.addEventListener('click', checkPassword);
+            letterPassword.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkPassword();
+            });
+        }
+        
+        // Gallery functionality
+        function loadGallery() {
+            // Show loading animation
+            galleryLoading.style.display = 'flex';
+            gallery.innerHTML = '';
+            
+            // Simulate loading delay (remove this in production)
+            setTimeout(() => {
+                // Create gallery items
+                galleryItems.forEach(item => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    
+                    if (item.type === 'image') {
+                        const img = document.createElement('img');
+                        img.src = item.src;
+                        img.alt = 'Our memory';
+                        img.loading = 'lazy';
+                        galleryItem.appendChild(img);
+                    } else if (item.type === 'video') {
+                        const video = document.createElement('video');
+                        video.src = item.src;
+                        video.controls = true;
+                        video.muted = true;
+                        video.preload = 'metadata';
+                        galleryItem.appendChild(video);
+                    }
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = 'overlay';
+                    galleryItem.appendChild(overlay);
+                    
+                    gallery.appendChild(galleryItem);
+                });
+                
+                // Hide loading animation
+                galleryLoading.style.display = 'none';
+                
+                // Set up intersection observer for lazy loading and animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = 1;
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                // Apply animations
+                document.querySelectorAll('.gallery-item').forEach(item => {
+                    item.style.opacity = 0;
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    observer.observe(item);
+                });
+            }, 1000);
+        }
+        
+        // Quiz functionality
+        function setupQuiz() {
+            totalElement.textContent = quizQuestions.length;
+            
+            function showQuestion(index) {
+                quizQuestions.forEach((question, i) => {
+                    question.classList.toggle('active', i === index);
+                });
+                
+                // Update navigation buttons
+                prevQuestionBtn.disabled = index === 0;
+                nextQuestionBtn.textContent = index === quizQuestions.length - 1 ? 'Submit' : 'Next';
+                
+                // Hide results
+                quizResults.style.display = 'none';
+            }
+            
+            function nextQuestion() {
+                if (currentQuestion < quizQuestions.length - 1) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                } else {
+                    // Show results
+                    showResults();
+                }
+            }
+            
+            function prevQuestion() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            }
+            
+            function showResults() {
+                quizResults.style.display = 'block';
+                scoreElement.textContent = quizScore;
+                
+                // Custom message based on score
+                const percentage = (quizScore / quizQuestions.length) * 100;
+                if (percentage >= 80) {
+                    quizMessage.textContent = "You know me so well! I love you! ❤";
+                } else if (percentage >= 50) {
+                    quizMessage.textContent = "Good job! But there's more to learn about us 😊";
+                } else {
+                    quizMessage.textContent = "We need to spend more time together! 💕";
+                }
+                
+                // Hide all questions
+                quizQuestions.forEach(question => {
+                    question.classList.remove('active');
+                });
+            }
+            
+            function checkAnswer(selectedOption) {
+                const isCorrect = selectedOption.dataset.correct === 'true';
+                
+                if (isCorrect) {
+                    selectedOption.classList.add('correct');
+                    quizScore++;
+                } else {
+                    selectedOption.classList.add('wrong');
+                    // Highlight correct answer
+                    const correctOption = selectedOption.parentElement.querySelector('[data-correct="true"]');
+                    correctOption.classList.add('correct');
+                }
+                
+                // Disable all options after selection
+                const options = selectedOption.parentElement.querySelectorAll('.quiz-option');
+                options.forEach(option => {
+                    option.style.pointerEvents = 'none';
+                });
+            }
+            
+            function restartQuiz() {
+                currentQuestion = 0;
+                quizScore = 0;
+                
+                // Reset all questions
+                quizQuestions.forEach(question => {
+                    const options = question.querySelectorAll('.quiz-option');
+                    options.forEach(option => {
+                        option.classList.remove('correct', 'wrong');
+                        option.style.pointerEvents = 'auto';
+                    });
+                });
+                
+                showQuestion(0);
+            }
+            
+            // Event listeners
+            nextQuestionBtn.addEventListener('click', nextQuestion);
+            prevQuestionBtn.addEventListener('click', prevQuestion);
+            restartQuizBtn.addEventListener('click', restartQuiz);
+            
+            quizOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    checkAnswer(this);
+                });
+            });
+            
+            // Show first question
+            showQuestion(0);
+        }
+        
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>
